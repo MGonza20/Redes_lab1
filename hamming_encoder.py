@@ -25,7 +25,14 @@ def encode(n: int, frame: str) -> str:
                     # es una columna para asignar a un bit de paridad
                     if selected_num != 'p':
                         row[row_indx] = selected_num    
-    return matrix_
+
+    p_cols = [i for i, x in enumerate(guide) if x == 'p']
+    matrix_eval = matrix_[1:]
+    for indx, col in enumerate(p_cols):
+        row_ = matrix_eval[indx]
+        matrix_eval[indx][col] = '1' if row_.count('1') % 2 != 0 else '0'
+
+    return matrix_eval
 
 
 
