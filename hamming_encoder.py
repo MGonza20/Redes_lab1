@@ -26,15 +26,23 @@ def encode(n: int, frame: str) -> str:
                     if selected_num != 'p':
                         row[row_indx] = selected_num    
 
+    # Se asignan los bits de paridad
     p_cols = [i for i, x in enumerate(guide) if x == 'p']
     matrix_eval = matrix_[1:]
     for indx, col in enumerate(p_cols):
         row_ = matrix_eval[indx]
         matrix_eval[indx][col] = '1' if row_.count('1') % 2 != 0 else '0'
 
-    return matrix_eval
+    # Se arma la trama
+    t_matrix = list(zip(*matrix_eval)) 
+    for i, col in enumerate(t_matrix):  
+        if '1' in col:
+            matrix_eval[-1][i] = '1'
+        else:
+            matrix_eval[-1][i] = '0'
 
+    return ''.join(matrix_eval[-1])
+    
 
-
-a = encode(11, '0101001')
-uu = 123
+frame_result = encode(11, '0101001')
+print(frame_result)
