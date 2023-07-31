@@ -10,7 +10,7 @@ def encode(n: int, frame: str) -> str:
                for row in range(r+2)]
     
     iter_f = iter(frame)
-    matrix_[0] = [next(iter_f) if x == 'd' else x for x in matrix_[0]]
+    matrix_[0] = [next(iter_f, 'd') if x == 'd' else x for x in matrix_[0]]
     
     guide = matrix_[0]
     for col_indx, row in enumerate(matrix_[1:len(matrix_) - 1], start=1):
