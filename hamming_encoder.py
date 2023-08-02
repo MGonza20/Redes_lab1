@@ -59,7 +59,7 @@ def compare(original_frame: str, compare_frame: str, n:int) -> str:
     compare_data = int(compare_data, 2)
 
     f2 = list(f2)
-    f2[compare_data - 1] = '\033[1m' + '\033[4m' + '1' + '\033[0m' if f2[compare_data - 1] == '1' else '\033[1m' + '\033[4m' + '0' + '\033[0m'
+    f2[compare_data - 1] = '\033[31m' + f2[compare_data - 1] + '\033[0m'
     return ''.join(f2)
 
     
