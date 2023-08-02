@@ -50,22 +50,21 @@ def compare(original_frame: str, compare_frame: str, n:int) -> str:
     f1, p_b1 = encode(n, original_frame)
     f2, p_b2 = encode(n, compare_frame)
 
-    if p_b1 != p_b2:
-        # comparando los bits de paridad
-        compare_data = ['1' if x != y else '0' for x, y in zip(p_b1, p_b2)]
-        compare_data.reverse()
-        compare_data = ''.join(compare_data)
-        compare_data = int(compare_data, 2)
+    if p_b1 == p_b2: return 'Todo ok'
 
-        f2 = list(f2)
-        f2[compare_data - 1] = '1͟' if f2[compare_data - 1] == '1' else '0͟'
-        return ''.join(f2)
-    else:
-        return 'Todo ok'
+    # comparando los bits de paridad
+    compare_data = ['1' if x != y else '0' for x, y in zip(p_b1, p_b2)]
+    compare_data.reverse()
+    compare_data = ''.join(compare_data)
+    compare_data = int(compare_data, 2)
+
+    f2 = list(f2)
+    f2[compare_data - 1] = '\033[1m' + '\033[4m' + '1' + '\033[0m' if f2[compare_data - 1] == '1' else '\033[1m' + '\033[4m' + '0' + '\033[0m'
+    return ''.join(f2)
 
     
 
 # frame_result = encode(11, '0101000')
 # print(frame_result)
 
-print(compare('0101001', '0101000', 11), '\n')
+print(compare('0101101', '0101001', 11), '\n')
