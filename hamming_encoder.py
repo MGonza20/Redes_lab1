@@ -46,26 +46,38 @@ def encode(n: int, frame: str) -> str:
     return (''.join(matrix_eval[-1]), parity_bits)
 
 
-def compare(original_frame: str, compare_frame: str, n:int) -> str:
-    f1, p_b1 = encode(n, original_frame)
-    f2, p_b2 = encode(n, compare_frame)
+def get_parity_bits(frame:str):
+    frame_list = list(frame)
+    parity_bits = [bit for i, bit in enumerate(frame_list, start=1) if power_of_two(i)]
+    return ''.join(parity_bits)
 
-    if p_b1 != p_b2:
-        # comparando los bits de paridad
-        compare_data = ['1' if x != y else '0' for x, y in zip(p_b1, p_b2)]
-        compare_data.reverse()
-        compare_data = ''.join(compare_data)
-        compare_data = int(compare_data, 2)
 
-        f2 = list(f2)
-        f2[compare_data - 1] = '1͟' if f2[compare_data - 1] == '1' else '0͟'
-        return ''.join(f2)
-    else:
-        return 'Todo ok'
+def check(incoming_frame: str) -> str:
+    
+    frame_list = list(incoming_frame)
+    parity_bits = [bit for i, bit in enumerate(frame_list, start=1) if power_of_two(i)]
+    incoming_p_bits = ''.join(parity_bits)
+
+    wo_parity = [bit for i, bit in enumerate(frame_list, start=1) if not power_of_two(i)]
+    wo_parity = ''.join(wo_parity)
+
+    encoded_frame = encode(len(incoming_frame), wo_parity)
+    original_p_bits = ''.join(encoded_frame[1])
+
+
+    if incoming_p_bits == original_p_bits: return 'Todo ok'
+
+    # comparando los bits de paridad
+    compare_data = ['1' if x != y else '0' for x, y in zip(incoming_p_bits, original_p_bits)]
+    compare_data.reverse()
+    compare_data = ''.join(compare_data)
+    compare_data = int(compare_data, 2)
+
+    incoming_frame = list(incoming_frame)
+    incoming_frame[compare_data - 1] = '\033[31m' + '1' + '\033[0m' if incoming_frame[compare_data - 1] == '1' else '\033[31m' + '0' + '\033[0m'
+    return ''.join(incoming_frame)
 
     
 
-# frame_result = encode(11, '0101000')
-# print(frame_result)
-
-print(compare('0101001', '0101000', 11), '\n')
+# print(encode(11, '0101001'), '\n')
+print(check('10001011000'<), '\n')
