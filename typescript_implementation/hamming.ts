@@ -53,7 +53,52 @@ export const encodeWithHaamming = (frame: string) => {
 	for (let i = 0; i < r; i++) {
 		response[(2 ** i) - 1] = parityBits[i];
 	}	
-	return response.join('');
+	return [response.join(''), parityBits];
 }
 
-console.log(encodeWithHaamming('1101'));
+
+/**
+ * Decode a frame with hamming code
+ * @param frame Frame to decode
+ */
+const decodeWithHamming = (frame: string) => {
+	const n = frame.length;
+	let r = 0;
+	// Calculando el numero de bits redundantes y bits con data
+	for (let i = 0; i < n; i++) {
+		// 2^r >= m + r + 1
+		if (Math.pow(2, i) >= n + 1) {
+			r = i;
+			break;
+		}
+	}
+	let receivedParityBits = new Array(r);
+	let incomingFrame: string = '';
+	let k = 0
+	for (let i = 0; i < n; i++) {
+		if (isPowerOfTwo(i + 1)) {
+			receivedParityBits[k] = parseInt(frame.charAt(i));
+			k += 1;
+		} else {
+			incomingFrame += frame.charAt(i);
+		}
+	}
+	let parityBits = encodeWithHaamming(incomingFrame)[1];
+	let syndrome = [];
+
+	for (let i = r - 1; i >= 0; i--) {
+		syndrome.push(receivedParityBits[i] !== parityBits[i] ? 1 : 0);
+	}
+	if (syndrome.length === 0) {
+		console.log('CODIGO CORRECTO');
+	} else {
+		let errorPosition = parseInt(syndrome.join(''), 2);
+		console.log('ERROR EN POSICION: ' + errorPosition);
+		let correctFrame = frame.split('');
+		correctFrame[errorPosition - 1] = correctFrame[errorPosition - 1] === '0' ? '1' : '0';
+		console.log('FRAME CORREGIDO: ' + correctFrame.join(''));
+	}
+}
+
+console.log(encodeWithHaamming('0101001')[0]);
+decodeWithHamming('10001011000')
