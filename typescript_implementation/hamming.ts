@@ -89,7 +89,8 @@ const decodeWithHamming = (frame: string) => {
 	for (let i = r - 1; i >= 0; i--) {
 		syndrome.push(receivedParityBits[i] !== parityBits[i] ? 1 : 0);
 	}
-	if (syndrome.length === 0) {
+	
+	if (parseInt(syndrome.join('')) === 0 ) {
 		console.log('CODIGO CORRECTO');
 	} else {
 		let errorPosition = parseInt(syndrome.join(''), 2);
@@ -101,4 +102,5 @@ const decodeWithHamming = (frame: string) => {
 }
 
 console.log(encodeWithHaamming('0101001')[0]);
-decodeWithHamming('10001011000')
+
+decodeWithHamming('10101011001')
