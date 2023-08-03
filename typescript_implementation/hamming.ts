@@ -83,8 +83,13 @@ const decodeWithHamming = (frame: string) => {
 			incomingFrame += frame.charAt(i);
 		}
 	}
+
+	console.log('Parity bits recibidos: ', receivedParityBits)
+	console.log('Data incoming: ', incomingFrame)
 	let parityBits = encodeWithHaamming(incomingFrame)[1];
 	let syndrome = [];
+
+	console.log('Parity bits calculados: ', parityBits)
 
 	for (let i = r - 1; i >= 0; i--) {
 		syndrome.push(receivedParityBits[i] !== parityBits[i] ? 1 : 0);
@@ -101,6 +106,7 @@ const decodeWithHamming = (frame: string) => {
 	}
 }
 
-console.log(encodeWithHaamming('0101001')[0]);
+console.log(encodeWithHaamming('0101001'));
 
-decodeWithHamming('10101011001')
+decodeWithHamming('10001011000')
+
