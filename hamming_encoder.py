@@ -3,7 +3,7 @@
 def power_of_two(n):
 		return (n & (n - 1)) == 0
 
-def encode(n: int, frame: str) -> str:
+def hamming_encode(n: int, frame: str) -> str:
 		m = len(frame)
 		r = n - m
 		matrix_ = [['p' if power_of_two(col) else 'd' for col in range(1, n+1)] 
@@ -54,7 +54,7 @@ def get_parity_bits(frame:str):
     return ''.join(parity_bits)
 
 
-def check(incoming_frame: str) -> str:
+def hamming_check(incoming_frame: str) -> str:
     
     frame_list = list(incoming_frame)
     parity_bits = [bit for i, bit in enumerate(frame_list, start=1) if power_of_two(i)]
@@ -63,7 +63,7 @@ def check(incoming_frame: str) -> str:
     wo_parity = [bit for i, bit in enumerate(frame_list, start=1) if not power_of_two(i)]
     wo_parity = ''.join(wo_parity)
 
-    encoded_frame = encode(len(incoming_frame), wo_parity)
+    encoded_frame = hamming_encode(len(incoming_frame), wo_parity)
     original_p_bits = ''.join(encoded_frame[1])
 
 
@@ -81,5 +81,5 @@ def check(incoming_frame: str) -> str:
 
 		
 
-# print(encode(11, '0101001'), '\n')
-print(check('10001011000'), '\n')
+# print(hamming_encode(11, '0101001'), '\n')
+print(hamming_check('10001011000'), '\n')
