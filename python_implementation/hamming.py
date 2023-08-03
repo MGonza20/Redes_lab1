@@ -48,10 +48,12 @@ def hamming_encode(n: int, frame: str) -> str:
 		return (''.join(matrix_eval[-1]), parity_bits)
 
 
+
 def get_parity_bits(frame:str):
     frame_list = list(frame)
     parity_bits = [bit for i, bit in enumerate(frame_list, start=1) if power_of_two(i)]
     return ''.join(parity_bits)
+
 
 
 def hamming_check(incoming_frame: str) -> str:
@@ -81,5 +83,5 @@ def hamming_check(incoming_frame: str) -> str:
 
 		
 
-# print(hamming_encode(11, '0101001'), '\n')
-print(hamming_check('10001011000'), '\n')
+print(hamming_encode(11, '1011001'), '\n')
+# print(hamming_check('10001010000'), '\n')
