@@ -11,6 +11,7 @@ def hamming_encode(frame: str) -> str:
 		for i in range(m):
 			if math.pow(2, i) >= m + i + 1:
 				r = i
+				break
 		n = m + r
 
 		matrix_ = [['p' if power_of_two(col) else 'd' for col in range(1, n+1)] 
