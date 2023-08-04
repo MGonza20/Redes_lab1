@@ -35,9 +35,36 @@ def decodeFletcher(content, k=16):
 
 
 
-checksum = fletcher(binaryStringToByteArray('0101001'), 32)
-answer = "Si" if decodeFletcher('0101001' + checksum, 16) else "No"
+def interface():
+    c_bits = input("Ingresa la cadena de bits: ")
+    bits_q = int(input("Ingresa la cantidad de bits (8, 16, 32, 64): "))
+    checksum = "" 
 
-print(f"Fletcher-16 Checksum: {checksum}")
-print(f"Codigo valido {answer}")
+    if c_bits == "":
+        print("Cadena de bits vacia")
+        return
+    if bits_q not in [8, 16, 32, 64]:
+        print("Cantidad de bits no valida")
+        return
 
+    if bits_q == 8:
+        checksum = fletcher(binaryStringToByteArray(c_bits), 8)
+        print(f"Fletcher-8 Checksum: {checksum}")
+    elif bits_q == 16:
+        checksum = fletcher(binaryStringToByteArray(c_bits), 16)
+        print(f"Fletcher-16 Checksum: {checksum}")
+    elif bits_q == 32:
+        checksum = fletcher(binaryStringToByteArray(c_bits), 32)
+        print(f"Fletcher-32 Checksum: {checksum}")
+    elif bits_q == 64:
+        checksum = fletcher(binaryStringToByteArray(c_bits), 64)
+        print(f"Fletcher-64 Checksum: {checksum}")
+
+    if checksum == "": return
+    answer = "Si" if decodeFletcher(c_bits + checksum, bits_q) else "No"
+    print(f"Codigo valido {answer}")
+
+
+
+if __name__ == "__main__":
+    interface()
