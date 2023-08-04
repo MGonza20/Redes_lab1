@@ -90,8 +90,8 @@ def hamming_check(incoming_frame: str) -> str:
 
 		
 
-# print(hamming_encode(11, '1011001'), '\n')
-# print(hamming_check('10001011000'), '\n')
+# print(hamming_encode('0101001'), '\n')
+# print(hamming_check('1000101100100'), '\n')
 
 def interface():
 	c_bits = input("Ingresa la cadena de bits: ")
@@ -107,8 +107,12 @@ def interface():
 	print(f'BITS DE PARIDAD: {", ".join(hamming_encode(c_bits)[1])}\n')
 
 	check_bits = input("Ingresa la cadena de bits a verificar: ")
-	print(f'CHEQUEO: {hamming_check(check_bits)}\n')
-
+	result = hamming_check(check_bits)
+	print("IDENTIFICACION DE ERRORES: ")
+	if result != 'Todo ok':
+		print(f'ERROR EN EL BIT {result}\n')
+	else:
+		print(result)	
 
 if __name__ == '__main__':
 	interface()
