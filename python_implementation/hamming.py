@@ -11,6 +11,7 @@ def hamming_encode(frame: str) -> str:
 		for i in range(m):
 			if math.pow(2, i) >= m + i + 1:
 				r = i
+				break
 		n = m + r
 
 		matrix_ = [['p' if power_of_two(col) else 'd' for col in range(1, n+1)] 
@@ -88,13 +89,10 @@ def hamming_check(incoming_frame: str) -> str:
     incoming_frame[compare_data - 1] = '\033[31m' + '1' + '\033[0m' if incoming_frame[compare_data - 1] == '1' else '\033[31m' + '0' + '\033[0m'
     return ''.join(incoming_frame)
 
-		
 
-# print(hamming_encode('0101001'), '\n')
-# print(hamming_check('1000101100100'), '\n')
 
 def interface():
-	c_bits = input("Ingresa la cadena de bits: ")
+	c_bits = input("\nIngresa la cadena de bits: ")
 	print()
 	
 	if c_bits == "":
@@ -108,11 +106,11 @@ def interface():
 
 	check_bits = input("Ingresa la cadena de bits a verificar: ")
 	result = hamming_check(check_bits)
-	print("IDENTIFICACION DE ERRORES: ")
+	print("\nIDENTIFICACION DE ERRORES: ")
 	if result != 'Todo ok':
-		print(f'ERROR EN EL BIT {result}\n')
+		print(f' >> Error en el bit {result}\n')
 	else:
-		print(result)	
+		print(f' >> {result}')	
 
 if __name__ == '__main__':
 	interface()
