@@ -86,8 +86,14 @@ def hamming_check(incoming_frame: str) -> str:
     compare_data = int(compare_data, 2)
 
     incoming_frame = list(incoming_frame)
+    fixed_frame = incoming_frame.copy()
+    fixed_frame[compare_data - 1] = '0' if fixed_frame[compare_data - 1] == '1' else '1' 
+    fixed_frame = ''.join(fixed_frame)
+    
     incoming_frame[compare_data - 1] = '\033[31m' + '1' + '\033[0m' if incoming_frame[compare_data - 1] == '1' else '\033[31m' + '0' + '\033[0m'
-    return ''.join(incoming_frame)
+    incoming_frame = ''.join(incoming_frame)
+    
+    return (f'>> Error en el bit {incoming_frame}\n>> Trama corregida: {fixed_frame}')
 
 
 
@@ -108,9 +114,10 @@ def interface():
 	result = hamming_check(check_bits)
 	print("\nIDENTIFICACION DE ERRORES: ")
 	if result != 'Todo ok':
-		print(f' >> Error en el bit {result}\n')
+		print(result)
 	else:
-		print(f' >> {result}')	
+		print(f'>> No se detectaron errores en la trama: {check_bits}')
+
 
 if __name__ == '__main__':
 	interface()
