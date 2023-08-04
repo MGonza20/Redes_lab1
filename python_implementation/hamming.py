@@ -91,4 +91,24 @@ def hamming_check(incoming_frame: str) -> str:
 		
 
 # print(hamming_encode(11, '1011001'), '\n')
-print(hamming_check('10001011000'), '\n')
+# print(hamming_check('10001011000'), '\n')
+
+def interface():
+	c_bits = input("Ingresa la cadena de bits: ")
+	print()
+	
+	if c_bits == "":
+		print("Cadena de bits vacia")
+		return
+	
+	uu = hamming_encode(c_bits)
+	
+	print(f'TRAMA: {hamming_encode(c_bits)[0]}')
+	print(f'BITS DE PARIDAD: {", ".join(hamming_encode(c_bits)[1])}\n')
+
+	check_bits = input("Ingresa la cadena de bits a verificar: ")
+	print(f'CHEQUEO: {hamming_check(check_bits)}\n')
+
+
+if __name__ == '__main__':
+	interface()
