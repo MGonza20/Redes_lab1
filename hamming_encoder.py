@@ -81,5 +81,6 @@ def hamming_check(incoming_frame: str) -> str:
 
 		
 
-# print(hamming_encode(11, '0101001'), '\n')
-print(hamming_check('10001011000'), '\n')
+print(hamming_encode(11, '1111101'), '\n')
+# print(hamming_check('10001011000'), '\n')
+
