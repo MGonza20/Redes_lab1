@@ -56,7 +56,7 @@ def hamming_encode(frame: str) -> str:
 		return (''.join(matrix_eval[-1]), parity_bits)
 
 
-
+# Calculando bits de paridad
 def get_parity_bits(frame:str):
     frame_list = list(frame)
     parity_bits = [bit for i, bit in enumerate(frame_list, start=1) if power_of_two(i)]
