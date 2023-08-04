@@ -36,7 +36,7 @@ def decodeFletcher(content, k=16):
 
 
 def interface():
-    c_bits = input("Ingresa la cadena de bits: ")
+    c_bits = input("\nIngresa la cadena de bits: ")
     bits_q = int(input("Ingresa la cantidad de bits (8, 16, 32, 64): "))
     checksum = "" 
 
@@ -49,22 +49,23 @@ def interface():
 
     if bits_q == 8:
         checksum = fletcher(binaryStringToByteArray(c_bits), 8)
-        print(f"Fletcher-8 Checksum: {checksum}")
+        frame = f"Fletcher-8 Checksum: {checksum}"
     elif bits_q == 16:
         checksum = fletcher(binaryStringToByteArray(c_bits), 16)
-        print(f"Fletcher-16 Checksum: {checksum}")
+        frame = f"Fletcher-16 Checksum: {checksum}"
     elif bits_q == 32:
         checksum = fletcher(binaryStringToByteArray(c_bits), 32)
-        print(f"Fletcher-32 Checksum: {checksum}")
+        frame = f"Fletcher-32 Checksum: {checksum}"
     elif bits_q == 64:
         checksum = fletcher(binaryStringToByteArray(c_bits), 64)
-        print(f"Fletcher-64 Checksum: {checksum}")
+        frame = f"Fletcher-64 Checksum: {checksum}"
 
     if checksum == "": return
     answer = "Si" if decodeFletcher(c_bits + checksum, bits_q) else "No"
-    print(f"Codigo valido {answer}")
-
-
+    if answer == "No": 
+        print(f"\nErrores detectados. Se descarta la trama.")
+    else:
+        print(f"\nNo se detectaron errores.\n{frame}")
 
 if __name__ == "__main__":
     interface()
