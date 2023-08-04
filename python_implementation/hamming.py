@@ -11,6 +11,7 @@ def hamming_encode(frame: str) -> str:
 		for i in range(m):
 			if math.pow(2, i) >= m + i + 1:
 				r = i
+				break
 		n = m + r
 
 		matrix_ = [['p' if power_of_two(col) else 'd' for col in range(1, n+1)] 
@@ -55,7 +56,7 @@ def hamming_encode(frame: str) -> str:
 		return (''.join(matrix_eval[-1]), parity_bits)
 
 
-
+# Calculando bits de paridad
 def get_parity_bits(frame:str):
     frame_list = list(frame)
     parity_bits = [bit for i, bit in enumerate(frame_list, start=1) if power_of_two(i)]
@@ -85,10 +86,38 @@ def hamming_check(incoming_frame: str) -> str:
     compare_data = int(compare_data, 2)
 
     incoming_frame = list(incoming_frame)
+    fixed_frame = incoming_frame.copy()
+    fixed_frame[compare_data - 1] = '0' if fixed_frame[compare_data - 1] == '1' else '1' 
+    fixed_frame = ''.join(fixed_frame)
+    
     incoming_frame[compare_data - 1] = '\033[31m' + '1' + '\033[0m' if incoming_frame[compare_data - 1] == '1' else '\033[31m' + '0' + '\033[0m'
-    return ''.join(incoming_frame)
+    incoming_frame = ''.join(incoming_frame)
+    
+    return (f'>> Error en el bit {incoming_frame}\n>> Trama corregida: {fixed_frame}')
 
-		
 
-# print(hamming_encode(11, '1011001'), '\n')
-print(hamming_check('10001011000'), '\n')
+
+def interface():
+	c_bits = input("\nIngresa la cadena de bits: ")
+	print()
+	
+	if c_bits == "":
+		print("Cadena de bits vacia")
+		return
+	
+	uu = hamming_encode(c_bits)
+	
+	print(f'TRAMA: {hamming_encode(c_bits)[0]}')
+	print(f'BITS DE PARIDAD: {", ".join(hamming_encode(c_bits)[1])}\n')
+
+	check_bits = input("Ingresa la cadena de bits a verificar: ")
+	result = hamming_check(check_bits)
+	print("\nIDENTIFICACION DE ERRORES: ")
+	if result != 'Todo ok':
+		print(result)
+	else:
+		print(f'>> No se detectaron errores en la trama: {check_bits}')
+
+
+if __name__ == '__main__':
+	interface()
