@@ -1,4 +1,12 @@
+import chalk from 'chalk';
+import prompt from 'prompt-sync';
 
+/**
+ * Calculate a fletcher checksum
+ * @param data Data to encode
+ * @param k Flavor for the fletcher checksum
+ * @returns 
+ */
 const fletcher = (data: number[], k = 16) => {
 	
   let sum1 = 0;
@@ -23,6 +31,11 @@ const fletcher = (data: number[], k = 16) => {
   return checksumString;
 }
 
+/**
+ * Converts a binary string to a byte array
+ * @param str 
+ * @returns 
+ */
 const binaryStringToByteArray = (str: string) => {
 	const byteArray = [];
 	for (let i = 0; i < str.length; i += 8) {
@@ -32,6 +45,12 @@ const binaryStringToByteArray = (str: string) => {
 }
 
 
+/**
+ * Decodes a fletcher code
+ * @param content content to decode
+ * @param k factor for the fletcher checksum
+ * @returns 
+ */
 const decodeFletcher = (content: string, k = 16) => {
 	// checksum is the last k bits
 	const checksum = content.slice(content.length - k);
@@ -41,8 +60,13 @@ const decodeFletcher = (content: string, k = 16) => {
 	return expectedChecksum === checksum;
 }
 
-// Example usage:
-const checksum = fletcher(binaryStringToByteArray('0101001'), 16);
+// Ejemplo de uso
+const checksum = fletcher(binaryStringToByteArray('1000111'), 16);
 console.log("Fletcher-16 Checksum:", checksum);
-console.log("Codigo valido: ", decodeFletcher('0101001' + checksum, 16) ? "Si" : "No");
-
+var n = prompt()('Ingrese frame para realizar decoding: ');
+const ok = decodeFletcher(n, 16);
+if (ok) {
+	console.log(chalk.green('CODIGO CORRECTO'));
+} else {
+	console.log(chalk.red('CODIGO INCORRECTO'));
+}

@@ -1,6 +1,6 @@
 
-
-
+import chalk from 'chalk';
+import prompt from 'prompt-sync';
 /**
  * Cheks if a number is power of two
  * @param num Number to check if is power of two
@@ -83,30 +83,26 @@ const decodeWithHamming = (frame: string) => {
 			incomingFrame += frame.charAt(i);
 		}
 	}
-
-	console.log('Parity bits recibidos: ', receivedParityBits)
-	console.log('Data incoming: ', incomingFrame)
+	// Identificar posible error 
 	let parityBits = encodeWithHaamming(incomingFrame)[1];
 	let syndrome = [];
-
-	console.log('Parity bits calculados: ', parityBits)
-
 	for (let i = r - 1; i >= 0; i--) {
 		syndrome.push(receivedParityBits[i] !== parityBits[i] ? 1 : 0);
 	}
 	
 	if (parseInt(syndrome.join('')) === 0 ) {
-		console.log('CODIGO CORRECTO');
+		console.log(chalk.green('CODIGO CORRECTO'));
 	} else {
+		// Corregir la trama (solo funciona si hay un error)
 		let errorPosition = parseInt(syndrome.join(''), 2);
-		console.log('ERROR EN POSICION: ' + errorPosition);
+		console.log(chalk.red('ERROR EN POSICION: ' + errorPosition));
 		let correctFrame = frame.split('');
 		correctFrame[errorPosition - 1] = correctFrame[errorPosition - 1] === '0' ? '1' : '0';
-		console.log('FRAME CORREGIDO: ' + correctFrame.join(''));
+		console.log(chalk.yellow('FRAME CORREGIDO: ' + correctFrame.join('')));
 	}
 }
 
-console.log(encodeWithHaamming('0101001'));
-
-decodeWithHamming('10001011000')
-
+// Ejemplo de uso
+console.log(encodeWithHaamming('1010101'));
+var n = prompt()('Ingrese frame para realizar decoding: ');
+decodeWithHamming(n);
