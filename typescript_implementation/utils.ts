@@ -18,3 +18,38 @@ export const asciiToBinaryString = (asciiString: string): string => {
 	}
 	return binaryString;
 }
+
+
+/**
+ * Result class
+ */
+export class Result<T> {
+	public value?: T;
+	public isSuccess: boolean;
+	public error?: string;
+
+	constructor(isSuccess: boolean, value?: T, error?: string) { 
+		this.isSuccess = isSuccess;
+		this.value = value;
+		this.error = error;
+	}
+
+	/**
+	 * Create an ok result
+	 * @param value 
+	 * @returns 
+	 */
+	public static ok<U>(value: U): Result<U> {
+		return new Result<U>(true, value);
+	}
+
+	/**
+	 * Create a failed result
+	 * @param error 
+	 * @returns 
+	 */
+	public static fail<U>(error: string): Result<U> {
+		return new Result<U>(false, undefined, error);
+	}
+
+}

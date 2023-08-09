@@ -1,3 +1,4 @@
+import { Result } from './../utils';
 
 import chalk from 'chalk';
 import prompt from 'prompt-sync';
@@ -14,7 +15,7 @@ const isPowerOfTwo = (num: number) => {
  * @param n Length of the frame
  * @param frame Frame to send
  */
-export const encodeWithHaamming = (frame: string) => {
+export const encodeWithHaamming = (frame: string): Result<[string, number[]]> => {
 	let r = 0;
 	let m = frame.length;
 	let response: number[] = [];
@@ -53,7 +54,7 @@ export const encodeWithHaamming = (frame: string) => {
 	for (let i = 0; i < r; i++) {
 		response[(2 ** i) - 1] = parityBits[i];
 	}	
-	return [response.join(''), parityBits];
+	return Result.ok([response.join(''), parityBits]);
 }
 
 
@@ -61,7 +62,7 @@ export const encodeWithHaamming = (frame: string) => {
  * Decode a frame with hamming code
  * @param frame Frame to decode
  */
-const decodeWithHamming = (frame: string) => {
+export const decodeWithHamming = (frame: string): Result<String> => {
 	const n = frame.length;
 	let r = 0;
 	// Calculando el numero de bits redundantes y bits con data
@@ -84,21 +85,28 @@ const decodeWithHamming = (frame: string) => {
 		}
 	}
 	// Identificar posible error 
-	let parityBits = encodeWithHaamming(incomingFrame)[1];
+	const encodingResult = encodeWithHaamming(incomingFrame);
+	let parityBits: number[];
+	if (!encodingResult.isSuccess) {
+		return Result.fail(encodingResult.error ?? '');
+	} else {
+		parityBits = encodingResult.value![1];
+	}
 	let syndrome = [];
 	for (let i = r - 1; i >= 0; i--) {
 		syndrome.push(receivedParityBits[i] !== parityBits[i] ? 1 : 0);
 	}
 	
 	if (parseInt(syndrome.join('')) === 0 ) {
-		console.log(chalk.green('CODIGO CORRECTO'));
+		return Result.ok(incomingFrame);
 	} else {
 		// Corregir la trama (solo funciona si hay un error)
 		let errorPosition = parseInt(syndrome.join(''), 2);
-		console.log(chalk.red('ERROR EN POSICION: ' + errorPosition));
+		let error = 'ERROR EN POSICION: ' + errorPosition;
 		let correctFrame = frame.split('');
 		correctFrame[errorPosition - 1] = correctFrame[errorPosition - 1] === '0' ? '1' : '0';
-		console.log(chalk.yellow('FRAME CORREGIDO: ' + correctFrame.join('')));
+		error += '\nTRAMA CORREGIDA: ' + correctFrame.join('');
+		return Result.fail(error);
 	}
 }
 
