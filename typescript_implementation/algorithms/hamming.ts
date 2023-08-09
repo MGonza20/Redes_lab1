@@ -1,4 +1,4 @@
-import { Result } from './../utils';
+import { Result, binaryStringToAscii } from './../utils';
 
 import chalk from 'chalk';
 import prompt from 'prompt-sync';
@@ -74,14 +74,12 @@ export const decodeWithHamming = (frame: string): Result<string> => {
 		}
 	}
 	let receivedParityBits = new Array(r);
-	let incomingFrame: string = '';
+	let incomingFrame: string = getIncomingData(frame);
 	let k = 0
 	for (let i = 0; i < n; i++) {
 		if (isPowerOfTwo(i + 1)) {
 			receivedParityBits[k] = parseInt(frame.charAt(i));
 			k += 1;
-		} else {
-			incomingFrame += frame.charAt(i);
 		}
 	}
 	// Identificar posible error 
@@ -106,6 +104,18 @@ export const decodeWithHamming = (frame: string): Result<string> => {
 		let correctFrame = frame.split('');
 		correctFrame[errorPosition - 1] = correctFrame[errorPosition - 1] === '0' ? '1' : '0';
 		error += '\nTRAMA CORREGIDA: ' + correctFrame.join('');
+		error += '\nMENSAJE: ' + binaryStringToAscii(getIncomingData(correctFrame.join(''))) + '\n';
 		return Result.fail(error);
 	}
+}
+
+const getIncomingData = (frame: string): string => {
+	let incomingFrame: string = '';
+	let k = 0
+	for (let i = 0; i < frame.length; i++) {
+		if (!isPowerOfTwo(i + 1)) {
+				incomingFrame += frame.charAt(i);
+		}
+	}
+	return incomingFrame;
 }

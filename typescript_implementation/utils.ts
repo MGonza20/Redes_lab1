@@ -33,6 +33,24 @@ export const binaryStringToAscii = (binaryString: string): string => {
 	return asciiString;
 }
 
+/**
+ * Add noise to a frame
+ * @param {string} frame 
+ * @param {number} probability 
+ * @returns 
+ */
+export const addNoiseToFrame = (frame: string, probability: number): string => {
+	let newFrame = '';
+	for (let i = 0; i < frame.length; i++) {
+		let bit = frame.charAt(i);
+		if (Math.random() < probability) {
+			console.log('noise!')
+			bit = (bit === '1') ? '0' : '1';
+		}
+		newFrame += bit;
+	}
+	return newFrame;
+}
 
 /**
  * Result class
