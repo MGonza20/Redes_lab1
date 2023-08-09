@@ -19,6 +19,20 @@ export const asciiToBinaryString = (asciiString: string): string => {
 	return binaryString;
 }
 
+/**
+ * Convert a binary string to its ascii representation.
+ * @param {string} binaryString 
+ * @returns {string}
+ */
+export const binaryStringToAscii = (binaryString: string): string => {
+	let asciiString = '';
+	for (let i = 0; i < binaryString.length; i += 8) {
+		let word = binaryString.slice(i, i + 8);
+		asciiString += String.fromCharCode(parseInt(word, 2));
+	}
+	return asciiString;
+}
+
 
 /**
  * Result class

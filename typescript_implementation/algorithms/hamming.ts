@@ -15,7 +15,7 @@ const isPowerOfTwo = (num: number) => {
  * @param n Length of the frame
  * @param frame Frame to send
  */
-export const encodeWithHaamming = (frame: string): Result<[string, number[]]> => {
+export const encodeWithHamming = (frame: string): Result<[string, number[]]> => {
 	let r = 0;
 	let m = frame.length;
 	let response: number[] = [];
@@ -62,7 +62,7 @@ export const encodeWithHaamming = (frame: string): Result<[string, number[]]> =>
  * Decode a frame with hamming code
  * @param frame Frame to decode
  */
-export const decodeWithHamming = (frame: string): Result<String> => {
+export const decodeWithHamming = (frame: string): Result<string> => {
 	const n = frame.length;
 	let r = 0;
 	// Calculando el numero de bits redundantes y bits con data
@@ -85,7 +85,7 @@ export const decodeWithHamming = (frame: string): Result<String> => {
 		}
 	}
 	// Identificar posible error 
-	const encodingResult = encodeWithHaamming(incomingFrame);
+	const encodingResult = encodeWithHamming(incomingFrame);
 	let parityBits: number[];
 	if (!encodingResult.isSuccess) {
 		return Result.fail(encodingResult.error ?? '');
@@ -109,8 +109,3 @@ export const decodeWithHamming = (frame: string): Result<String> => {
 		return Result.fail(error);
 	}
 }
-
-// Ejemplo de uso
-console.log(encodeWithHaamming('1010101'));
-var n = prompt()('Ingrese frame para realizar decoding: ');
-decodeWithHamming(n);
