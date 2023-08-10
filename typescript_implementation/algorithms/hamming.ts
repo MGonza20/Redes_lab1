@@ -2,6 +2,13 @@ import { Result, binaryStringToAscii } from './../utils';
 
 import chalk from 'chalk';
 import prompt from 'prompt-sync';
+
+
+export interface HammingError {
+	position: number;
+	corrected: string;
+	correctedFrame: string;
+}
 /**
  * Cheks if a number is power of two
  * @param num Number to check if is power of two
@@ -15,7 +22,7 @@ const isPowerOfTwo = (num: number) => {
  * @param n Length of the frame
  * @param frame Frame to send
  */
-export const encodeWithHamming = (frame: string): Result<[string, number[]]> => {
+export const encodeWithHamming = (frame: string): Result<[string, number[]], string> => {
 	let r = 0;
 	let m = frame.length;
 	let response: number[] = [];
@@ -62,7 +69,7 @@ export const encodeWithHamming = (frame: string): Result<[string, number[]]> => 
  * Decode a frame with hamming code
  * @param frame Frame to decode
  */
-export const decodeWithHamming = (frame: string): Result<string> => {
+export const decodeWithHamming = (frame: string): Result<string, HammingError> => {
 	const n = frame.length;
 	let r = 0;
 	// Calculando el numero de bits redundantes y bits con data
@@ -86,7 +93,11 @@ export const decodeWithHamming = (frame: string): Result<string> => {
 	const encodingResult = encodeWithHamming(incomingFrame);
 	let parityBits: number[];
 	if (!encodingResult.isSuccess) {
-		return Result.fail(encodingResult.error ?? '');
+		return Result.fail(encodingResult.error ?? '', {
+			position: 0,
+			corrected: '',
+			correctedFrame: ''
+		});
 	} else {
 		parityBits = encodingResult.value![1];
 	}
@@ -100,12 +111,16 @@ export const decodeWithHamming = (frame: string): Result<string> => {
 	} else {
 		// Corregir la trama (solo funciona si hay un error)
 		let errorPosition = parseInt(syndrome.join(''), 2);
-		let error = 'ERROR EN POSICION: ' + errorPosition;
+		let error = errorPosition;
 		let correctFrame = frame.split('');
 		correctFrame[errorPosition - 1] = correctFrame[errorPosition - 1] === '0' ? '1' : '0';
-		error += '\nTRAMA CORREGIDA: ' + correctFrame.join('');
-		error += '\nMENSAJE: ' + binaryStringToAscii(getIncomingData(correctFrame.join(''))) + '\n';
-		return Result.fail(error);
+		
+		let errorToSend: HammingError = {
+			position: errorPosition,
+			correctedFrame: correctFrame.join(''),
+			corrected: binaryStringToAscii(getIncomingData(correctFrame.join('')))
+		};
+		return Result.fail('No se logro hacer encoding.', errorToSend);
 	}
 }
 
