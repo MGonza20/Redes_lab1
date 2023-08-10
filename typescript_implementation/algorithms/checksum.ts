@@ -1,3 +1,4 @@
+import { Result, asciiToBinaryString, binaryStringToAscii } from './../utils';
 import chalk from 'chalk';
 import prompt from 'prompt-sync';
 
@@ -7,7 +8,7 @@ import prompt from 'prompt-sync';
  * @param k Flavor for the fletcher checksum
  * @returns 
  */
-const fletcher = (data: number[], k = 16) => {
+export const fletcher = (data: number[], k = 16): Result<string, string> => {
 	
   let sum1 = 0;
 	let sum2 = 0;
@@ -28,7 +29,7 @@ const fletcher = (data: number[], k = 16) => {
 	while ((checksumString.length % k) != 0) {
 		checksumString = '0' + checksumString;
 	}
-  return checksumString;
+  return Result.ok(checksumString);
 }
 
 /**
@@ -36,7 +37,7 @@ const fletcher = (data: number[], k = 16) => {
  * @param str 
  * @returns 
  */
-const binaryStringToByteArray = (str: string) => {
+export const binaryStringToByteArray = (str: string) => {
 	const byteArray = [];
 	for (let i = 0; i < str.length; i += 8) {
 		byteArray.push(parseInt(str.slice(i, i + 8), 2));
@@ -51,22 +52,27 @@ const binaryStringToByteArray = (str: string) => {
  * @param k factor for the fletcher checksum
  * @returns 
  */
-const decodeFletcher = (content: string, k = 16) => {
+export const decodeFletcher = (content: string, k = 16): Result<string, any> => {
 	// checksum is the last k bits
 	const checksum = content.slice(content.length - k);
 	const frame = content.slice(0, content.length - k);
 	const data = binaryStringToByteArray(frame);
 	const expectedChecksum = fletcher(data, k);
-	return expectedChecksum === checksum;
+	if (expectedChecksum.value! === checksum) {
+		console.log('Mensaje:', binaryStringToAscii(frame))
+		return Result.ok(frame);
+	} else {
+		return Result.fail('Checksum does not match',null);
+	}
 }
 
 // Ejemplo de uso
-const checksum = fletcher(binaryStringToByteArray('1000111'), 16);
-console.log("Fletcher-16 Checksum:", checksum);
-var n = prompt()('Ingrese frame para realizar decoding: ');
-const ok = decodeFletcher(n, 16);
-if (ok) {
-	console.log(chalk.green('CODIGO CORRECTO'));
-} else {
-	console.log(chalk.red('CODIGO INCORRECTO'));
-}
+
+// const msg = asciiToBinaryString('holaaa');
+// const checksum = fletcher(binaryStringToByteArray(msg), 16).value!;
+// const ok = decodeFletcher(`${msg}${checksum}`, 16);
+// if (ok.isSuccess) {
+// 	console.log(chalk.green('CODIGO CORRECTO'));
+// } else {
+// 	console.log(chalk.red('CODIGO INCORRECTO'));
+// }

@@ -5,6 +5,7 @@ import { decodeWithHamming, encodeWithHamming } from './algorithms/hamming';
 import { binaryStringToAscii, asciiToBinaryString } from './utils';
 import { appendFileSync } from "fs";
 import { words } from './words';
+import { binaryStringToByteArray, decodeFletcher, fletcher } from './algorithms/checksum';
 
 
 const app = express();
@@ -15,13 +16,9 @@ const server = app.listen(3000, () => {
 
 const io = new Server(server);
 
-let i = 0;
 
-io.on('connection', (socket) => {
-  console.log(`${socket.id} connected.`);
-	socket.on('frame', (frame) => { 
-		let word = words[i];
-		let original = encodeWithHamming(asciiToBinaryString(word)).value![0];
+const handleHamming = (frame: string, originalWord: string) => {
+		let original = encodeWithHamming(asciiToBinaryString(originalWord)).value![0];
 		console.log('original:',original);
 		console.log('Trama recibida: ' + frame)
 		const decodingResult = decodeWithHamming(frame);
@@ -35,8 +32,33 @@ io.on('connection', (socket) => {
 			const csv = `${original},fail,${decodingResult.errorValue!.correctedFrame}\n`
 			appendFileSync('hamming_results_3.csv', csv);
 		}
+};
+
+const handleFletcher = (frame: string, originalWord: string) => {
+		let original = fletcher(binaryStringToByteArray(asciiToBinaryString(originalWord))).value!;
+		const decodingResult = decodeFletcher(frame);
+		if (decodingResult.isSuccess) {
+			const csv = `${original},ok\n`
+			appendFileSync('fletcher_results_1.csv', csv);
+		} else {
+			console.log(chalk.red(decodingResult.error));
+			const csv = `${original},fail\n`
+			appendFileSync('fletcher_results_1.csv', csv);
+		}
+}
+
+
+
+
+let i = 0;
+
+io.on('connection', (socket) => {
+  console.log(`${socket.id} connected.`);
+	socket.on('frame', (frame) => { 
+		let word = words[i];
+		// handleHamming(frame, word);
+		handleFletcher(frame, word);
 		i += 1;
 	});
 });
-
 

@@ -6,11 +6,31 @@ import { encodeWithHamming } from './algorithms/hamming';
 
 import { generate, count } from "random-words";
 import { words } from './words';
+import { binaryStringToByteArray, fletcher } from './algorithms/checksum';
 
 // let n = prompt()(chalk.yellow('Ingrese frame para realizar decoding: '));
 const socket = io('http://localhost:3000');
 
 
+// ---- HAMMING ----
+
+// socket.on('connect', () => {
+// 	console.log(chalk.green('Conectado al servidor'));
+// 	for (const word of words) {
+// 		// ----- Presentacion -----
+// 		let frame = asciiToBinaryString(word);
+// 		// ----- Enlace -----
+// 		let encodedFrame = encodeWithHamming(frame).value![0];
+// 		// ----- Ruido -----
+// 		encodedFrame = addNoiseToFrame(encodedFrame, 10 / 100);
+// 		// ----- Transmision -----
+// 		socket.emit('frame', encodedFrame);
+// 		console.log('Trama enviada: ' + encodedFrame);
+// 	}
+// });
+
+
+// ---- FLETCHER 16 ----
 
 socket.on('connect', () => {
 	console.log(chalk.green('Conectado al servidor'));
@@ -18,11 +38,14 @@ socket.on('connect', () => {
 		// ----- Presentacion -----
 		let frame = asciiToBinaryString(word);
 		// ----- Enlace -----
-		let encodedFrame = encodeWithHamming(frame).value![0];
+		let checksum = fletcher(binaryStringToByteArray(frame)).value!;
+
+		let payload = frame + checksum;
+
 		// ----- Ruido -----
-		encodedFrame = addNoiseToFrame(encodedFrame, 10 / 100);
+		payload = addNoiseToFrame(payload, 10/100);
 		// ----- Transmision -----
-		socket.emit('frame', encodedFrame);
-		console.log('Trama enviada: ' + encodedFrame);
+		socket.emit('frame', payload);
+		console.log('Trama enviada: ' + payload);
 	}
 });
