@@ -55,15 +55,17 @@ export const addNoiseToFrame = (frame: string, probability: number): string => {
 /**
  * Result class
  */
-export class Result<T> {
+export class Result<T, E> {
 	public value?: T;
 	public isSuccess: boolean;
 	public error?: string;
+	public errorValue?: E;
 
-	constructor(isSuccess: boolean, value?: T, error?: string) { 
+	constructor(isSuccess: boolean, value?: T, error?: string, errorValue?: E) { 
 		this.isSuccess = isSuccess;
 		this.value = value;
 		this.error = error;
+		this.errorValue = errorValue;
 	}
 
 	/**
@@ -71,17 +73,18 @@ export class Result<T> {
 	 * @param value 
 	 * @returns 
 	 */
-	public static ok<U>(value: U): Result<U> {
-		return new Result<U>(true, value);
+	public static ok<U,E>(value: U): Result<U,E> {
+		return new Result<U,E>(true, value);
 	}
 
 	/**
 	 * Create a failed result
 	 * @param error 
+	 * @param errorValue 
 	 * @returns 
 	 */
-	public static fail<U>(error: string): Result<U> {
-		return new Result<U>(false, undefined, error);
+	public static fail<U,E>(error: string, errorValue: E): Result<U,E> {
+		return new Result<U,E>(false, undefined, error, errorValue);
 	}
 
 }
