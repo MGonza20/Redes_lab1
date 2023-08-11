@@ -77,7 +77,7 @@ def hamming_check(incoming_frame: str) -> str:
     original_p_bits = ''.join(encoded_frame[1])
 
 
-    if incoming_p_bits == original_p_bits: return 'Todo ok'
+    if incoming_p_bits == original_p_bits: return {'success': wo_parity}
 
     # comparando los bits de paridad
     compare_data = ['1' if x != y else '0' for x, y in zip(incoming_p_bits, original_p_bits)]
@@ -92,9 +92,7 @@ def hamming_check(incoming_frame: str) -> str:
     
     incoming_frame[compare_data - 1] = '\033[31m' + '1' + '\033[0m' if incoming_frame[compare_data - 1] == '1' else '\033[31m' + '0' + '\033[0m'
     incoming_frame = ''.join(incoming_frame)
-    
-    return (f'>> Error en el bit {incoming_frame}\n>> Trama corregida: {fixed_frame}')
-
+    return {'error': [incoming_frame, fixed_frame]}
 
 
 def interface():
