@@ -6,9 +6,19 @@ import { binaryStringToAscii, asciiToBinaryString } from './utils';
 import { appendFileSync } from "fs";
 import { words } from './words';
 import { binaryStringToByteArray, decodeFletcher, fletcher } from './algorithms/checksum';
+import prompt from 'prompt-sync';
 
 
 const app = express();
+
+let algorithm = prompt()('Ingrese el algoritmo a utilizar (hamming/fletcher): ');
+let option = 0;	// hamming = 0
+if (algorithm === 'hamming') {
+	option = 0;
+} else if (algorithm === 'fletcher') {
+	option = 1;
+}
+
 
 const server = app.listen(3000, () => {
   console.log('Listening at port 3000');
@@ -56,8 +66,11 @@ io.on('connection', (socket) => {
   console.log(`${socket.id} connected.`);
 	socket.on('frame', (frame) => { 
 		let word = words[i];
-		// handleHamming(frame, word);
-		handleFletcher(frame, word);
+		if (option == 0) {
+			handleHamming(frame, word);
+		} else {
+			handleFletcher(frame, word);
+		}
 		i += 1;
 	});
 });
