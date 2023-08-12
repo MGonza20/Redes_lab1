@@ -31,7 +31,7 @@ def decodeFletcher(content, k=16):
     frame = content[:-k]
     data = binaryStringToByteArray(frame)
     expectedChecksum = fletcher(data, k)
-    return expectedChecksum == checksum
+    return [expectedChecksum == checksum, data]
 
 
 
