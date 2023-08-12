@@ -21,4 +21,4 @@ def on_connect():
     socket.emit('frame', encoded_frame)
     print("Trama enviada:", encoded_frame)
 
-socket.connect('http://localhost:3003')
+socket.connect('http://localhost:3000')
