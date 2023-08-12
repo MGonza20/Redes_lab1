@@ -3,6 +3,7 @@ from flask_socketio import SocketIO
 from algorithms.hamming import hamming_check
 from utils import binary_string_to_ascii
 
+
 PORT = 3000
 HOST = '127.0.0.1'
 
@@ -15,9 +16,10 @@ def handle_frame(frame):
     decodingResult = hamming_check(frame)
     if 'success' in decodingResult:
         message = binary_string_to_ascii(decodingResult['success'])
-        print("\033[92m" + 'Mensaje recibido:', message + "\033[0m")
+        print(f'Mensaje recibido: \033[92m{message}\033[0m')
     else:
-        print("\033[91m" + decodingResult + "\033[0m")
+        print("\033[31mError: No se logro hacer encoding.\033[31m")
+        print(f"\033[31mCadena con error:\033[31m {decodingResult['error'][0]}")
 
 if __name__ == '__main__':
     print(f'Listening on port {PORT} \n')
